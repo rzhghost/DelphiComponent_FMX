@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.Types, FMX.Types, FMX.Controls, FMX.Objects,
-  FMX.StdCtrls, System.Threading, System.Net.HttpClient;
+  FMX.StdCtrls, System.Threading, System.Net.HttpClient, FMX.PlatForm, FMX.MediaLibrary, System.Messaging;
 
 type
   TSyncWebImage = class(TImage)
@@ -48,6 +48,10 @@ constructor TSyncWebImage.Create(AOwner: TComponent);
 begin
   inherited;
   FClient := THTTPClient.Create;
+  FClient.ConnectionTimeout := 90000;
+  FClient.ResponseTimeout := 90000;
+  //以常用方式访问,有些服务器会限制非标准请求
+  FClient.UserAgent := 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15';
   FClient.OnReceiveData := ReceiveDataEvent;
   ProgressBar:= TProgressBar.Create(Self);
   with ProgressBar do
@@ -90,7 +94,8 @@ end;
 
 procedure TSyncWebImage.CancelDownLoad;
 begin
-  FAsyncResult.Cancel;
+  if Assigned(FAsyncResult) then
+    FAsyncResult.Cancel;
 end;
 
 procedure TSyncWebImage.Download;
@@ -130,8 +135,8 @@ begin
         if LAsyncResponse.StatusCode=200 then
         begin
           FDownloadStream.Position := 0;
-          ProgressBar.Visible := False;
           Self.bitmap.LoadFromStream(FDownloadStream);
+          ProgressBar.Visible := False;
           self.Repaint;
         end;
       end);
