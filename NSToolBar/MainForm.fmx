@@ -1,0 +1,46 @@
+object frmNSToolbarDemo: TfrmNSToolbarDemo
+  Left = 0
+  Top = 0
+  Caption = 'FireMonkey NSToolbar Demo'
+  ClientHeight = 400
+  ClientWidth = 600
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  DesignerMasterStyle = 0
+  object memEditor: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    TextSettings.Font.Size = 13.000000000000000000
+    Align = Client
+    DisableFocusEffect = True
+    Size.Width = 600.000000000000000000
+    Size.Height = 400.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Viewport.Width = 596.000000000000000000
+    Viewport.Height = 396.000000000000000000
+  end
+  object dlgOpen: TOpenDialog
+    DefaultExt = 'txt'
+    Filter = 'Text files (*.txt)|*.txt'
+    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
+    Title = 'Open Text File'
+    Left = 168
+    Top = 152
+  end
+  object MainMenu1: TMainMenu
+    Left = 240
+    Top = 152
+    object MenuItem1: TMenuItem
+      Text = 'File'
+      object itmFileOpen: TMenuItem
+        Locked = True
+        Text = 'Open'
+        OnClick = itmFileOpenClick
+      end
+    end
+  end
+end
