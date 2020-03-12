@@ -11,8 +11,10 @@ type
   TfrmNSAlert = class(TForm)
     btnDialogStyle: TButton;
     btnSheetStyle: TButton;
+    Button1: TButton;
     procedure btnSheetStyleClick(Sender: TObject);
     procedure btnDialogStyleClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   end;
 
 var
@@ -20,7 +22,8 @@ var
 
 implementation
 
-uses Macapi.CocoaTypes, Macapi.Foundation, Macapi.AppKit, CCR.NSAlertHelper;
+uses Macapi.CocoaTypes, Macapi.Foundation, Macapi.AppKit, CCR.NSAlertHelper,Macapi.CoreFoundation
+;
 
 {$R *.fmx}
 
@@ -67,6 +70,29 @@ begin
       end;
       Alert.release;
     end);
+end;
+
+procedure ShowMessageCF(const AHeading, AMessage: string; const ATimeoutInSecs: Double = 0);
+var
+  LHeading, LMessage: CFStringRef;
+  LResponse: CFOptionFlags;
+begin
+  LHeading := CFStringCreateWithCharactersNoCopy(nil, PWideChar(AHeading),
+    Length(AHeading), kCFAllocatorNull);
+  LMessage := CFStringCreateWithCharactersNoCopy(nil, PWideChar(AMessage),
+    Length(AMessage), kCFAllocatorNull);
+  try
+    CFUserNotificationDisplayAlert(ATimeoutInSecs, kCFUserNotificationNoteAlertLevel,
+      nil, nil, nil, LHeading, LMessage, nil, nil, nil, LResponse);
+  finally
+    CFRelease(LHeading);
+    CFRelease(LMessage);
+  end;
+end;
+
+procedure TfrmNSAlert.Button1Click(Sender: TObject);
+begin
+  ShowMessageCF('Test', 'This dialog will auto-destruct in 10 seconds!', 10);
 end;
 
 end.
